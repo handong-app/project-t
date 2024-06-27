@@ -64,9 +64,13 @@ export const StyledCalendarWrapper = styled.div`
   /* 오늘 날짜 폰트 컬러 */
   .react-calendar__tile--now {
     background: none;
-    abbr {
-      color: ${(props) => props.theme.primary_2};
+    color: black;
+    &:hover {
+      background-color: #e6e6e6;
     }
+    /* abbr {
+      color: ${(props) => props.theme.primary_2};
+    } */
   }
 
   /* 네비게이션 월 스타일 적용 */

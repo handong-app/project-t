@@ -48,33 +48,31 @@ function SurveyPage() {
           next2Label={null}
           prev2Label={null}
           minDetail="year"
-          // 오늘 날짜로 돌아오는 기능을 위해 필요한 옵션 설정
-          activeStartDate={
-            activeStartDate === null ? undefined : activeStartDate
-          }
-          onActiveStartDateChange={({ activeStartDate }) =>
-            setActiveStartDate(activeStartDate)
-          }
-          // 오늘 날짜에 '오늘' 텍스트 삽입하고 출석한 날짜에 점 표시를 위한 설정
-          tileContent={({ date, view }) => {
-            let html = [];
-            if (
-              view === "month" &&
-              date.getMonth() === today.getMonth() &&
-              date.getDate() === today.getDate()
-            ) {
-              html.push(<StyledToday key={"today"}>오늘</StyledToday>);
-            }
-            if (
-              attendDay.find((x) => x === moment(date).format("YYYY-MM-DD"))
-            ) {
-              html.push(<StyledDot key={moment(date).format("YYYY-MM-DD")} />);
-            }
-            return <>{html}</>;
-          }}
+          // // 오늘 날짜로 돌아오는 기능을 위해 필요한 옵션 설정
+          // activeStartDate={
+          //   activeStartDate === null ? undefined : activeStartDate
+          // }
+          // onActiveStartDateChange={({ activeStartDate }) =>
+          //   setActiveStartDate(activeStartDate)
+          // }
+          // // 오늘 날짜에 '오늘' 텍스트 삽입하고 출석한 날짜에 점 표시를 위한 설정
+          // tileContent={({ date, view }) => {
+          //   let html = [];
+          //   if (
+          //     view === "month" &&
+          //     date.getMonth() === today.getMonth() &&
+          //     date.getDate() === today.getDate()
+          //   ) {
+          //     html.push(<StyledToday key={"today"}>오늘</StyledToday>);
+          //   }
+          //   if (
+          //     attendDay.find((x) => x === moment(date).format("YYYY-MM-DD"))
+          //   ) {
+          //     html.push(<StyledDot key={moment(date).format("YYYY-MM-DD")} />);
+          //   }
+          //   return <>{html}</>;
+          // }}
         />
-        // 오늘 버튼 추가
-        <StyledDate onClick={handleTodayClick}>오늘</StyledDate>
       </StyledCalendarWrapper>
     </div>
   );
