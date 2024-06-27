@@ -7,6 +7,7 @@ import "./index.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import TestPage from "./pages/TestPage.jsx";
 import SurveyPage from "./pages/SurveyPage.jsx";
+import LoginPage from "./pages/LoginPage.jsx";
 
 const router = createBrowserRouter([
   {
