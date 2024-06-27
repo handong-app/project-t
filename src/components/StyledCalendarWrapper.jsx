@@ -81,7 +81,7 @@ export const StyledCalendarWrapper = styled.div`
   }
   /* 오늘 날짜 클릭 */
   .react-calendar__tile--now:enabled:focus {
-    background: #006edc;
+    background: #1087ff;
     color: white;
   }
 
