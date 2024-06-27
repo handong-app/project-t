@@ -47,7 +47,7 @@ export const StyledCalendarWrapper = styled.div`
 
   /* 년/월 상단 네비게이션 칸 크기 줄이기 */
   .react-calendar__navigation__label {
-    flex-grow: 0 !important;
+    flex-grow: 1 !important;
   }
 
   /* 요일 밑줄 제거 */
@@ -65,12 +65,24 @@ export const StyledCalendarWrapper = styled.div`
   .react-calendar__tile--now {
     background: none;
     color: black;
+    &:enabled {
+    }
+    /*
     &:hover {
       background-color: #e6e6e6;
-    }
+    } */
     /* abbr {
       color: ${(props) => props.theme.primary_2};
     } */
+  }
+  /* 오늘 날짜 hover */
+  .react-calendar__tile--now:enabled:hover {
+    background-color: #e6e6e6;
+  }
+  /* 오늘 날짜 클릭 */
+  .react-calendar__tile--now:enabled:focus {
+    background: #006edc;
+    color: white;
   }
 
   /* 네비게이션 월 스타일 적용 */
@@ -82,7 +94,7 @@ export const StyledCalendarWrapper = styled.div`
 
   /* 네비게이션 현재 월 스타일 적용 */
   .react-calendar__tile--hasActive {
-    background-color: ${(props) => props.theme.primary_2};
+    /* background-color: ${(props) => props.theme.primary_2}; */
     abbr {
       color: white;
     }
