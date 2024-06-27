@@ -1,12 +1,27 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { auth } from "./../tools/firebase";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  signInWithPopup,
+} from "firebase/auth";
 import { useState } from "react";
 import styled from "styled-components";
 
 function LoginPage() {
   const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUserData(user);
+      } else {
+        setUserData(null);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
 
   function handleGoogleLogin() {
     const provider = new GoogleAuthProvider();
