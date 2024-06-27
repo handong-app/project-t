@@ -28,7 +28,7 @@ function SurveyPage() {
 
   return (
     <div>
-      <h1>SurveyPage</h1>
+      <h1>MarkingPage</h1>
       {/* <Calendar
         formatDay={(locale, date) => moment(date).format("DD")}
         minDetail="month"

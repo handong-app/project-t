@@ -15,8 +15,9 @@ function App() {
     <div className="App">
       <h1>Hello Frontend!</h1>
       <TestComponent />
-      <Link to="/test">To Test Page</Link>
-      <Link to="/login">To Login Page</Link>
+      <Link to="/test">To Test Page</Link> <br />
+      <Link to="/login">To Login Page</Link> <br />
+      <Link to="/m/ABCDE">To Marking Page</Link> <br />
     </div>
   );
 }

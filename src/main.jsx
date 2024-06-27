@@ -23,7 +23,7 @@ const router = createBrowserRouter([
     element: <LoginPage />,
   },
   {
-    path: "/survey/:surveyId",
+    path: "/m/:surveyId",
     element: <SurveyPage />,
   },
 ]);
