@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import { firestore } from "../tools/firebase";
-import { collection, getDocs, addDoc } from "firebase/firestore";
+import { collection, getDocs, doc, setDoc } from "firebase/firestore";
+import { useRecoilValue } from "recoil";
+import { UserEmailState } from "../store/atom";
 
 //ToDo : 은주 : props 넘겨받고 콘솔로 확인
 function CreatePage() {
@@ -13,6 +16,8 @@ function CreatePage() {
   const [error, setError] = useState("");
   const [ecode, setEcode] = useState([]);
   const [success, setSuccess] = useState(false);
+  const userEmail = useRecoilValue(UserEmailState);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,9 +43,10 @@ function CreatePage() {
     } else {
       setError("");
       try {
-        addDoc(collection(firestore, "room"), {
-          m_id: "Hannaa", // 방 생성자 아이디 -> 로그인 이후 저장된 데이터
-          r_code: rcode,
+        const docRef = doc(firestore, "room", rcode);
+        setDoc(docRef, {
+          m_id: userEmail, // 방 생성자 아이디 -> 로그인 이후 저장된 데이터
+          // r_code: rcode,
           r_intro: intro,
           r_memberId: members,
           r_name: name,
@@ -55,7 +61,8 @@ function CreatePage() {
         setError("");
         setTimeout(() => {
           setSuccess(false);
-        }, 2000);
+          navigate("/test"); //TODO: 생성 후 다음페이지로 경로 변경해줘야함.
+        }, 1000);
       } catch (error) {
         console.error("생성 실패 오류 : ", error);
       }

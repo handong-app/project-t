@@ -5,8 +5,11 @@ import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { useSetRecoilState } from "recoil";
+import { UserEmailState } from "../store/atom";
 
 function LoginPage() {
+  const setUserToken = useSetRecoilState(UserEmailState);
   const [userData, setUserData] = useState(null);
 
   function handleGoogleLogin() {
@@ -14,6 +17,7 @@ function LoginPage() {
     signInWithPopup(auth, provider)
       .then((data) => {
         setUserData(data.user);
+        setUserToken(data.user.email);
         console.log(data);
       })
       .catch((err) => {
