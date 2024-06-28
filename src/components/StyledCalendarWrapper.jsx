@@ -118,10 +118,18 @@ export const StyledCalendarWrapper = styled.div`
   /* 선택한 날짜 스타일 적용 */
   .react-calendar__tile:enabled:hover,
   .react-calendar__tile:enabled:focus,
-  .react-calendar__tile--active {
+  .react-calendar__tile--active,
+  .selectedDate,
+  .selectedDate.react-calendar__tile:enabled:focus {
     background-color: ${(props) => props.theme.colors.purple500};
     color: white;
     border-radius: 0.5rem;
+  }
+
+  /* Focus style 취소 */
+  .react-calendar__tile:enabled:focus {
+    background-color: white;
+    color: black;
   }
 `;
 

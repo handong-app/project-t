@@ -12,12 +12,23 @@ import {
 
 function SurveyPage() {
   const today = new Date();
-  const [date, setDate] = useState(today);
+  const [selectedDates, setDate] = useState([]);
   const [activeStartDate, setActiveStartDate] = useState();
   const attendDay = ["2023-12-03", "2023-12-13"]; // 출석한 날짜 예시
 
   const handleDateChange = (newDate) => {
-    setDate(newDate);
+    setDate((prev) => {
+      const prevDateIdx = prev.findIndex((ddate) =>
+        moment(ddate).isSame(newDate)
+      );
+      const newArr = [...prev];
+      if (prevDateIdx < 0) {
+        return [...prev, newDate];
+      } else {
+        newArr.splice(prevDateIdx, 1);
+        return newArr;
+      }
+    });
   };
 
   const handleTodayClick = () => {
@@ -38,7 +49,7 @@ function SurveyPage() {
       /> */}
       <StyledCalendarWrapper>
         <StyledCalendar
-          value={date}
+          value={null}
           onChange={handleDateChange}
           formatDay={(locale, date) => moment(date).format("D")}
           formatYear={(locale, date) => moment(date).format("YYYY")}
@@ -48,6 +59,13 @@ function SurveyPage() {
           next2Label={null}
           prev2Label={null}
           minDetail="year"
+          tileClassName={({ activeStartDate, date, view }) => {
+            console.log({ date, selectedDates });
+            const sameDate = selectedDates.some((sdate) =>
+              moment(sdate).isSame(date)
+            );
+            if (sameDate) return "selectedDate";
+          }}
           // // 오늘 날짜로 돌아오는 기능을 위해 필요한 옵션 설정
           // activeStartDate={
           //   activeStartDate === null ? undefined : activeStartDate
