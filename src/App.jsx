@@ -17,6 +17,7 @@ function App() {
       <TestComponent />
       <Link to="/test">To Test Page</Link>
       <Link to="/login">To Login Page</Link>
+      <Link to="/vote">To Vote Page</Link>
     </div>
   );
 }
