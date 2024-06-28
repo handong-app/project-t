@@ -1,5 +1,5 @@
 import Calendar from "react-calendar";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import "react-calendar/dist/Calendar.css";
 
 export const StyledCalendarWrapper = styled.div`
@@ -150,7 +150,7 @@ export const StyledCalendarWrapper = styled.div`
     props.readOnly &&
     css`
       // Read only 시 hover 효과 취소
-      .react-calendar__tile:enabled:hover,
+      .react-calendar__tile:enabled:hover:not(.selectedDate),
       .react-calendar__tile:enabled:focus {
         background-color: white;
         color: black;
