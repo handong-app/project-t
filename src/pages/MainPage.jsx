@@ -1,16 +1,24 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import ChooseDate from "../components/ChooseDate";
+import FindRoom from "../components/FindRoom";
 
 function MainPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const showModal = () => {
     setModalOpen(true);
   };
+  const [findRoomModalOpen, setFindRoomModalOpen] = useState(false);
+  const showFindRoomModal = () => {
+    setFindRoomModalOpen(true);
+  };
   return (
     <BtnContainer>
-      <CodeSearch>코드 입력</CodeSearch>
-      <CodeSearch onClick={() => showModal()}>코드 생성</CodeSearch>
+      <MainBtn onClick={() => showFindRoomModal()}>코드 입력</MainBtn>
+      {findRoomModalOpen && (
+        <FindRoom setFindRoomModalOpen={setFindRoomModalOpen} />
+      )}
+      <MainBtn onClick={() => showModal()}>코드 생성</MainBtn>
       {modalOpen && <ChooseDate setModalOpen={setModalOpen} />}
     </BtnContainer>
   );
@@ -23,13 +31,12 @@ const BtnContainer = styled.div`
   align-items: space-evenly;
   /* border: 2px solid red; */
 `;
-const CodeSearch = styled.div`
+const MainBtn = styled.div`
   display: flex;
   padding: 40px 30px;
-  /* background-color: #ba68c8; // <<<<<<<- 나중에 변경 */
-  border: 2px solid #7b1fa249;
+  border: 2px solid ${(props) => props.theme.colors.purple700};
   border-radius: 15px;
-  color: #7b1fa2de;
+  color: ${(props) => props.theme.colors.purple600};
   font-weight: bolder;
   background-color: white;
   width: 200px;
@@ -41,7 +48,7 @@ const CodeSearch = styled.div`
   transition: 0.15s;
   &:hover {
     transform: scale(1.1);
-    background-color: #8e24aa; // <<<<<<<- 나중에 변경
+    background-color: ${(props) => props.theme.colors.purple700};
     color: white;
   }
 `;
