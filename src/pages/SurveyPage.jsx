@@ -47,7 +47,7 @@ function SurveyPage() {
         navigationLabel={null}
         showNeighboringMonth={false}
       /> */}
-      <StyledCalendarWrapper>
+      <StyledCalendarWrapper readOnly={true}>
         <StyledCalendar
           value={null}
           onChange={handleDateChange}

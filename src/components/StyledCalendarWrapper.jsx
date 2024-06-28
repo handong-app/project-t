@@ -133,7 +133,8 @@ export const StyledCalendarWrapper = styled.div`
   .react-calendar__tile--active,
   .selectedDate,
   .selectedDate.react-calendar__tile:enabled:focus {
-    background-color: ${(props) => props.theme.colors.purple500};
+    background-color: ${(props) =>
+      props.readOnly ? "grey" : props.theme.colors.purple500};
     color: white;
     border-radius: 0.5rem;
   }
@@ -143,6 +144,18 @@ export const StyledCalendarWrapper = styled.div`
     background-color: white;
     color: black;
   }
+
+  // Read Only Mode
+  ${(props) =>
+    props.readOnly &&
+    css`
+      // Read only 시 hover 효과 취소
+      .react-calendar__tile:enabled:hover,
+      .react-calendar__tile:enabled:focus {
+        background-color: white;
+        color: black;
+      }
+    `}
 `;
 
 export const StyledCalendar = styled(Calendar)``;
