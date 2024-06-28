@@ -16,7 +16,9 @@ function App() {
       <h1>Hello Frontend!</h1>
       <TestComponent />
       <Link to="/test">To Test Page</Link>
-      <Link to="/login">To Login Page</Link>
+      <div>
+        <button onClick={() => signOut(auth)}>로그아웃</button>
+      </div>
     </div>
   );
 }
