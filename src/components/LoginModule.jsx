@@ -19,12 +19,8 @@ function LoginModule({ children }) {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUserData(user);
-        setUserToken(user.email);
-      } else {
-        setUserData(null);
-      }
+      setUserData(user);
+      setUserToken(user?.email);
     });
     return () => unsubscribe();
   }, []);
