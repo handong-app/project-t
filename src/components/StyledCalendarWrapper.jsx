@@ -192,7 +192,7 @@ export const StyledCalendarWrapper = styled.div`
 
   // 호버 효과 = readonly false 일때만 적용
   /* .react-calendar__tile:enabled:focus abbr  */
-  .react-calendar__tile:enabled:hover abbr {
+  .react-calendar__tile:not(.selectedDate):hover abbr {
     ${(props) =>
       !props.readOnly &&
       css`
