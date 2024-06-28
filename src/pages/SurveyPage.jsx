@@ -30,6 +30,10 @@ function SurveyPage() {
         readOnly={true}
         selectedDates={Object.keys(reservedDates)}
       />
+      <MarkCalendar
+        readOnly={false}
+        selectedDates={Object.keys(reservedDates)}
+      />
     </div>
   );
 }
