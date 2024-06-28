@@ -8,6 +8,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import TestPage from "./pages/TestPage.jsx";
 import SurveyPage from "./pages/SurveyPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
+import CreatePage from "./pages/CreatePage.jsx";
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
   {
     path: "/m/:surveyId",
     element: <SurveyPage />,
+  },
+  {
+    path: "/create",
+    element: <CreatePage />,
   },
 ]);
 
