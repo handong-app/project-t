@@ -8,7 +8,7 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import { useState } from "react";
-import styled from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 
 function LoginPage() {
   const [userData, setUserData] = useState(null);
@@ -39,22 +39,29 @@ function LoginPage() {
   console.log("user data : ", userData);
 
   return (
-    <Wrapper>
-      <TextContainer>
-        <MainText>Handong App</MainText>
-        <Text>쉽게 팀원을 초대하고 빠르게 일정을 잡아보세요</Text>
-        <LoginBtn onClick={handleGoogleLogin}>
-          <img src={googleLogo}></img>구글로 시작하기
-        </LoginBtn>
-      </TextContainer>
-      {/* <Text>
-        {userData ? "환영합니다, " + userData.displayName + "님" : " "}
-      </Text> */}
-    </Wrapper>
+    <>
+      <GlobalStyle />
+      <Wrapper>
+        <TextContainer>
+          <MainText>Handong App</MainText>
+          <Text>쉽게 팀원을 초대하고 빠르게 일정을 잡아보세요</Text>
+          <LoginBtn onClick={handleGoogleLogin}>
+            <img src={googleLogo}></img>구글로 시작하기
+          </LoginBtn>
+        </TextContainer>
+      </Wrapper>
+    </>
   );
 }
 
 export default LoginPage;
+
+const GlobalStyle = createGlobalStyle`
+  #root {
+    margin: 0 !important;
+    max-width: 100% !important;
+  }
+`;
 
 const Wrapper = styled.div`
   border: 0.1px solid #ffffff;
@@ -69,7 +76,7 @@ const TextContainer = styled.div`
   margin-top: 15%;
 
   @media (max-width: 600px) {
-    margin-top: 80%;
+    margin-top: 60%;
   }
 `;
 
