@@ -57,7 +57,6 @@ function MarkCalendar({
         prev2Label={null}
         minDetail="year"
         tileClassName={({ activeStartDate, date, view }) => {
-          console.log({ date, selectedDates });
           const sameDate = selectedDates.some((sdate) =>
             moment(sdate).isSame(moment(date))
           );
