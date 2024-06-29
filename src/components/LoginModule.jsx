@@ -13,17 +13,14 @@ import styled, { createGlobalStyle } from "styled-components";
 import { useSetRecoilState } from "recoil";
 import { UserEmailState } from "../store/atom";
 
-function LoginPage() {
+function LoginModule({ children }) {
   const setUserToken = useSetRecoilState(UserEmailState);
-  const [userData, setUserData] = useState(null);
+  const [userData, setUserData] = useState(undefined);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUserData(user);
-      } else {
-        setUserData(null);
-      }
+      setUserData(user);
+      setUserToken(user?.email);
     });
     return () => unsubscribe();
   }, []);
@@ -33,7 +30,6 @@ function LoginPage() {
     signInWithPopup(auth, provider)
       .then((data) => {
         setUserData(data.user);
-        setUserToken(data.user.email);
         console.log(data);
       })
       .catch((err) => {
@@ -43,35 +39,26 @@ function LoginPage() {
 
   console.log("user data : ", userData);
 
+  if (userData === undefined) return <div>Loading...</div>;
+  if (!!userData) return <>{children}</>;
+
   return (
     <>
       <GlobalStyle />
-
-      <LoginBtn onClick={handleGoogleLogin}>구글 로그인</LoginBtn>
-      {userData ? (
-        <>
-          <Text> 환영합니다, {userData.displayName}님 </Text>
-          //ToDo: 은주 : 너가 만든 페이지로 넘어가게 변경 (넘겨주면서 props같이)
-          <Link to="/create">
-            방 만들어보자 (은주가 작업한 페이지 메인에 올라오면 글로 옮길 예정)
-          </Link>
-        </>
-      ) : (
-        <Wrapper>
-          <TextContainer>
-            <MainText>Handong App</MainText>
-            <Text>쉽게 팀원을 초대하고 빠르게 일정을 잡아보세요</Text>
-            <LoginBtn onClick={handleGoogleLogin}>
-              <img src={googleLogo}></img>구글로 시작하기
-            </LoginBtn>
-          </TextContainer>
-        </Wrapper>
-      )}
+      <Wrapper>
+        <TextContainer>
+          <MainText>Handong App</MainText>
+          <Text>쉽게 팀원을 초대하고 빠르게 일정을 잡아보세요</Text>
+          <LoginBtn onClick={handleGoogleLogin}>
+            <img src={googleLogo}></img>구글로 시작하기
+          </LoginBtn>
+        </TextContainer>
+      </Wrapper>
     </>
   );
 }
 
-export default LoginPage;
+export default LoginModule;
 
 const GlobalStyle = createGlobalStyle`
   #root {
