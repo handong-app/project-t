@@ -15,6 +15,9 @@ function SurveyPage() {
 
   const [editMode, setEditMode] = useState(false);
   const [mySelectedDate, setMySelectedDate] = useState([]);
+  const [readOnlyFocusDate, setReadOnlyFocusDate] = useState();
+  const formattedReadOnlyFocusDate =
+    moment(readOnlyFocusDate).format("YYYY-MM-DD");
 
   const [roomInfo, setRoomInfo] = useState(null);
 
@@ -39,6 +42,9 @@ function SurveyPage() {
     } else {
       setEditMode(true);
     }
+
+    // 모드가 바뀔 때 초기화 해야하는 것들
+    setReadOnlyFocusDate(null);
   };
 
   const getRoomInfo = async () => {
@@ -62,10 +68,9 @@ function SurveyPage() {
   const reservedDates = {};
   Object.values(roomInfo.responsedata || {}).map((markUserData) =>
     markUserData.notAvalDates?.map((date) => {
-      reservedDates[date] = [...(reservedDates[date] || []), markUserData.id];
+      reservedDates[date] = [...(reservedDates[date] || []), markUserData];
     })
   );
-
   return (
     <div>
       <h1>MarkingPage</h1>
@@ -76,10 +81,17 @@ function SurveyPage() {
           setSelectedDate={setMySelectedDate}
         />
       ) : (
-        <MarkCalendar
-          readOnly={true}
-          selectedDates={Object.keys(reservedDates)}
-        />
+        <>
+          <MarkCalendar
+            readOnly={true}
+            selectedDates={Object.keys(reservedDates)}
+            setFocusDate={setReadOnlyFocusDate}
+          />
+          <h3>{formattedReadOnlyFocusDate}</h3>
+          {(reservedDates[formattedReadOnlyFocusDate] || []).map((item) => (
+            <div key={item.email}>{item?.displayName}</div>
+          ))}
+        </>
       )}
 
       <ButtonContainer>
