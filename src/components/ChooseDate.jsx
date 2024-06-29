@@ -3,17 +3,39 @@ import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
 import styled from "styled-components";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { useNavigate } from "react-router-dom";
 
-function CreateComponent({ setModalOpen }) {
+function ChooseDate({ setModalOpen }) {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const navigate = useNavigate();
 
   const closeModal = () => {
     setModalOpen(false);
   };
 
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   // setModalOpen(false);
+  //   navigate("/create", { state: { startDate, endDate }, lctn: { location } }); // 날짜 데이터 넘겨줌
+  //   // console.log("startdate: " + startDate.toLocaleDateString);
+  //   // console.log("endDate" + endDate.toLocaleDateString);
+  // };
+
+  const formatDate = (date) => {
+    return date ? date.toISOString().substring(0, 10) : "";
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    console.log("startDate: " + startDate);
+    console.log("endDate: " + endDate);
+    navigate("/create", {
+      state: { startDate: startDate, endDate: endDate },
+    }); // 날짜 데이터 넘겨줌
+  };
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <ModalBackground>
         <Modal>
           <ModalContents>
@@ -32,16 +54,14 @@ function CreateComponent({ setModalOpen }) {
                       <DatePickerWrapper>
                         <DatePicker
                           selected={startDate}
-                          onChange={(date) => setStartDate(date)}
+                          onChange={(date) => setStartDate(formatDate(date))}
                           dateFormat="yyyy-MM-dd"
                           placeholderText="시작 날짜"
                           className="datepicker-input"
                           required
                         />
                         {startDate && (
-                          <SelectedDateText>
-                            {startDate.toLocaleDateString()}
-                          </SelectedDateText>
+                          <SelectedDateText>{startDate}</SelectedDateText>
                         )}
                       </DatePickerWrapper>
                     </div>
@@ -52,16 +72,14 @@ function CreateComponent({ setModalOpen }) {
                       <DatePickerWrapper>
                         <DatePicker
                           selected={endDate}
-                          onChange={(date) => setEndDate(date)}
+                          onChange={(date) => setEndDate(formatDate(date))}
                           dateFormat="yyyy-MM-dd"
                           placeholderText="끝 날짜"
                           className="datepicker-input"
                           required
                         />
                         {endDate && (
-                          <SelectedDateText>
-                            {endDate.toLocaleDateString()}
-                          </SelectedDateText>
+                          <SelectedDateText>{endDate}</SelectedDateText>
                         )}
                       </DatePickerWrapper>
                     </div>
@@ -79,7 +97,7 @@ function CreateComponent({ setModalOpen }) {
   );
 }
 
-export default CreateComponent;
+export default ChooseDate;
 
 const ModalBackground = styled.div`
   z-index: 1500;
@@ -216,7 +234,7 @@ const SelectedDateText = styled.div`
   align-items: center;
   margin-top: 50px;
   /* width: 200px;
-  top: 100 px; 
+  top: 100 px;
   left: 10px;  */
   font-size: 35px;
   color: black;

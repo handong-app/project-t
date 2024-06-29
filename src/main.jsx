@@ -7,8 +7,8 @@ import "./index.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import TestPage from "./pages/TestPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
+import CreatePage from "./pages/CreatePage.jsx";
 import MainPage from "./pages/MainPage.jsx";
-
 const router = createBrowserRouter([
   {
     path: "/",
@@ -25,6 +25,10 @@ const router = createBrowserRouter([
   {
     path: "/main",
     element: <MainPage />,
+  },
+  {
+    path: "/create",
+    element: <CreatePage />,
   },
 ]);
 

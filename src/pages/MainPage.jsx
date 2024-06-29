@@ -25,6 +25,7 @@ function MainPage() {
 }
 
 export default MainPage;
+
 const BtnContainer = styled.div`
   display: flex;
   justify-content: space-evenly;
