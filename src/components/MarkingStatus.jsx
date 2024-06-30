@@ -30,14 +30,19 @@ function MarkingStatus({ userList }) {
     const users = Object.keys(userList);
     const newMarked = [];
     const newUnMarked = [];
+    const dateCount = {};
 
     for (const user of users) {
+      console.log(userList[user].notAvalDates);
       // 유저 리스트의 유저의 선택한 날짜의 개수가 0 이라면
       if (userList[user].notAvalDates.length === 0) {
         newUnMarked.push(userList[user]);
         setGoVote(false);
       } else {
         newMarked.push(userList[user]);
+        userList[user].notAvalDates.forEach((date) => {
+          dateCount[date] = (dateCount[date] || 0) + 1;
+        });
       }
     }
 
@@ -49,6 +54,13 @@ function MarkingStatus({ userList }) {
 
     setMarked(newMarked);
     setUnMarked(newUnMarked);
+
+    const maxCount = Math.max(...Object.values(dateCount));
+    const mostSelectedDates = Object.keys(dateCount).filter(
+      (date) => dateCount[date] === maxCount
+    );
+
+    console.log("가장 많은 유저가 선택한 날짜:", mostSelectedDates);
   }, [userList]);
 
   return (
