@@ -45,6 +45,26 @@ function LoginModule({ children }) {
   return (
     <>
       <GlobalStyle />
+      {/* 
+      <LoginBtn onClick={handleGoogleLogin}>구글 로그인</LoginBtn>
+      {userData ? (
+        <>
+          <Text> 환영합니다, {userData.displayName}님 </Text>
+          
+          <Link to="/main">메인으로가기</Link>
+        </>
+      ) : (
+        <Wrapper>
+          <TextContainer>
+            <MainText>Handong App</MainText>
+            <Text>쉽게 팀원을 초대하고 빠르게 일정을 잡아보세요</Text>
+            <LoginBtn onClick={handleGoogleLogin}>
+              <img src={googleLogo}></img>구글로 시작하기
+            </LoginBtn>
+          </TextContainer>
+        </Wrapper>
+      )} 
+      */}
       <Wrapper>
         <TextContainer>
           <MainText>Handong App</MainText>
