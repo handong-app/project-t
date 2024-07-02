@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import { firestore } from "../tools/firebase";
@@ -7,7 +7,6 @@ import { collection, getDocs, doc, setDoc } from "firebase/firestore";
 import { useRecoilValue } from "recoil";
 import { UserEmailState } from "../store/atom";
 
-//ToDo : 은주 : props 넘겨받고 콘솔로 확인
 function CreatePage() {
   const [name, setName] = useState("");
   const [intro, setIntro] = useState("");
@@ -18,6 +17,12 @@ function CreatePage() {
   const [success, setSuccess] = useState(false);
   const userEmail = useRecoilValue(UserEmailState);
   const navigate = useNavigate();
+  /// props 대신에...
+  const location = useLocation();
+  const { startDate, endDate } = location.state || {}; // 받아온 날짜 데이터 여기에 넣어줌
+  const [loading, setLoading] = useState(true);
+  console.log("startdate:!!!" + startDate);
+  console.log("endDate:!!!" + endDate);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,8 +32,9 @@ function CreatePage() {
         console.log(room.id, room.data());
         const rdata = room.data();
         fetchedEcode.push({ code: rdata.r_code });
-        setEcode(fetchedEcode);
       });
+      setEcode(fetchedEcode);
+      setLoading(false);
     };
 
     fetchData();
@@ -46,12 +52,12 @@ function CreatePage() {
         const docRef = doc(firestore, "room", rcode);
         setDoc(docRef, {
           m_id: userEmail, // 방 생성자 아이디 -> 로그인 이후 저장된 데이터
-          // r_code: rcode,
+          r_code: rcode,
           r_intro: intro,
           r_memberId: members,
           r_name: name,
-          r_fDate: "2024.04.12", //ToDo : 은주 : props 내용 넣어주기
-          r_sDate: "2024.05.12", //ToDo : 은주 : props 내용 넣어주기
+          r_fDate: startDate, // yyyy-mm-dd 형식
+          r_sDate: endDate, // yyyy-mm-dd 형식
         });
         setSuccess(true);
         setName("");
@@ -69,6 +75,9 @@ function CreatePage() {
     }
   };
 
+  if (loading) {
+    return <div>Loading...</div>; // 로딩 상태 표시
+  }
   return (
     <div>
       <MainText>방 만들기</MainText>

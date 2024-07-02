@@ -8,6 +8,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import TestPage from "./pages/TestPage.jsx";
 import SurveyPage from "./pages/SurveyPage.jsx";
 import CreatePage from "./pages/CreatePage.jsx";
+import MainPage from "./pages/MainPage.jsx";
 import LoginModule from "./components/LoginModule.jsx";
 
 const router = createBrowserRouter([
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
   {
     path: "/test",
     element: <TestPage />,
+  },
+  {
+    path: "/main",
+    element: <MainPage />,
   },
   {
     path: "/create",
