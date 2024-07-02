@@ -67,7 +67,7 @@ function CreatePage() {
         setError("");
         setTimeout(() => {
           setSuccess(false);
-          navigate("/test"); //TODO: 생성 후 다음페이지로 경로 변경해줘야함.
+          navigate("/m/" + rcode); //TODO: 생성 후 다음페이지로 경로 변경해줘야함.
         }, 1000);
       } catch (error) {
         console.error("생성 실패 오류 : ", error);
