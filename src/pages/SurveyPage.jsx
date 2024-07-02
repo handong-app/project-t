@@ -2,6 +2,7 @@ import moment from "moment";
 import React, { useEffect, useState } from "react";
 import MarkCalendar from "../components/MarkCalendar";
 import styled from "styled-components";
+import MarkingStatus from "../components/MarkingStatus";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { auth, firestore } from "../tools/firebase";
 import { useParams } from "react-router-dom";
@@ -12,17 +13,13 @@ function SurveyPage() {
   const userEmail = useRecoilValue(UserEmailState);
   const { displayName, email } = auth.currentUser;
   const email_ = email.replaceAll(".", "_");
-
   const [editMode, setEditMode] = useState(false);
   const [mySelectedDate, setMySelectedDate] = useState([]);
   const [readOnlyFocusDate, setReadOnlyFocusDate] = useState();
   const formattedReadOnlyFocusDate =
     moment(readOnlyFocusDate).format("YYYY-MM-DD");
-
   const [roomInfo, setRoomInfo] = useState(null);
-
   const { surveyId } = useParams();
-
   const firebaseDoc = doc(firestore, "room", surveyId);
 
   const toggleMode = async () => {
@@ -49,8 +46,8 @@ function SurveyPage() {
 
   const getRoomInfo = async () => {
     const roomDoc = (await getDoc(firebaseDoc)).data();
-    console.log(roomDoc);
     setRoomInfo(roomDoc);
+    // console.log(roomInfo);
 
     // 내가 선택한 날짜가 있으면 state 와 동기화 해주기
     setMySelectedDate(
@@ -72,32 +69,34 @@ function SurveyPage() {
     })
   );
   return (
-    <div>
-      <h1>MarkingPage</h1>
-      {editMode ? (
-        <MarkCalendar
-          readOnly={false}
-          selectedDates={mySelectedDate}
-          setSelectedDate={setMySelectedDate}
-        />
-      ) : (
-        <>
+    <StyledContainer>
+      <div>
+        <h1>MarkingPage</h1>
+        {editMode ? (
           <MarkCalendar
-            readOnly={true}
-            selectedDates={Object.keys(reservedDates)}
-            setFocusDate={setReadOnlyFocusDate}
+            readOnly={false}
+            selectedDates={mySelectedDate}
+            setSelectedDate={setMySelectedDate}
           />
-          <h3>{formattedReadOnlyFocusDate}</h3>
-          {(reservedDates[formattedReadOnlyFocusDate] || []).map((item) => (
-            <div key={item.email}>{item?.displayName}</div>
-          ))}
-        </>
-      )}
-
-      <ButtonContainer>
-        <Button onClick={toggleMode}>{editMode ? "저장" : "수정"}하기</Button>
-      </ButtonContainer>
-    </div>
+        ) : (
+          <>
+            <MarkCalendar
+              readOnly={true}
+              selectedDates={Object.keys(reservedDates)}
+              setFocusDate={setReadOnlyFocusDate}
+            />
+            <h3>{formattedReadOnlyFocusDate}</h3>
+            {(reservedDates[formattedReadOnlyFocusDate] || []).map((item) => (
+              <div key={item.email}>{item?.displayName}</div>
+            ))}
+          </>
+        )}
+        <ButtonContainer>
+          <Button onClick={toggleMode}>{editMode ? "저장" : "수정"}하기</Button>
+        </ButtonContainer>
+      </div>
+      <MarkingStatus userList={roomInfo.responsedata || {}} />
+    </StyledContainer>
   );
 }
 
@@ -111,6 +110,10 @@ const Button = styled.button`
     props.readOnly ? "grey" : props.theme.colors.purple400};
   font-weight: bold;
   color: white;
+`;
+
+const StyledContainer = styled.div`
+  display: flex;
 `;
 
 export default SurveyPage;
