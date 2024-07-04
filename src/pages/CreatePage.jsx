@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import { firestore } from "../tools/firebase";
-import { collection, getDocs, doc, setDoc } from "firebase/firestore";
+import { collection, getDocs, doc, setDoc, getDoc } from "firebase/firestore";
 import { useRecoilValue } from "recoil";
 import { UserEmailState } from "../store/atom";
 
@@ -11,9 +11,8 @@ function CreatePage() {
   const [name, setName] = useState("");
   const [intro, setIntro] = useState("");
   const [members, setMembers] = useState([]);
-  const [rcode, setRcode] = useState("");
+  const [docID, setDocID] = useState("");
   const [error, setError] = useState("");
-  const [ecode, setEcode] = useState([]);
   const [success, setSuccess] = useState(false);
   const userEmail = useRecoilValue(UserEmailState);
   const navigate = useNavigate();
@@ -25,34 +24,24 @@ function CreatePage() {
   console.log("endDate:!!!" + endDate);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const query = await getDocs(collection(firestore, "room"));
-      const fetchedEcode = [];
-      query.forEach((room) => {
-        console.log(room.id, room.data());
-        const rdata = room.data();
-        fetchedEcode.push({ code: rdata.r_code });
-      });
-      setEcode(fetchedEcode);
-      setLoading(false);
-    };
-
-    fetchData();
+    setLoading(false);
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const isDuplicate = ecode.some((item) => item.code === rcode);
-    console.log("isDuplicate" + isDuplicate);
-    if (isDuplicate) {
-      setError("중복되는 코드입니다.");
-    } else {
-      setError("");
-      try {
-        const docRef = doc(firestore, "room", rcode);
-        setDoc(docRef, {
+    setError("");
+    setSuccess(false);
+    setLoading(true);
+    try {
+      const docRef = doc(firestore, "room", docID);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        setError("중복되는 코드입니다.");
+      } else {
+        await setDoc(docRef, {
           m_id: userEmail, // 방 생성자 아이디 -> 로그인 이후 저장된 데이터
-          r_code: rcode,
+          // r_code: rcode, // <- r_code 대신 documentId사용
           r_intro: intro,
           r_memberId: members,
           r_name: name,
@@ -62,21 +51,28 @@ function CreatePage() {
         setSuccess(true);
         setName("");
         setIntro("");
-        setRcode("");
+        // setRcode("");
         setMembers("");
         setError("");
         setTimeout(() => {
           setSuccess(false);
-          navigate("/m/" + rcode); //TODO: 생성 후 다음페이지로 경로 변경해줘야함.
+          navigate("/m/" + docID); //TODO: 생성 후 다음페이지로 경로 변경해줘야함.
         }, 1000);
-      } catch (error) {
-        console.error("생성 실패 오류 : ", error);
       }
+    } catch (error) {
+      console.error("생성 실패 오류 : ", error);
+      setError("방 생성 중 오류가 발생했습니다.");
+    } finally {
+      setLoading(false);
     }
   };
 
   if (loading) {
-    return <div>Loading...</div>; // 로딩 상태 표시
+    return (
+      <>
+        <div>Loading...</div>
+      </>
+    ); // 로딩 상태 표시
   }
   return (
     <div>
@@ -101,9 +97,9 @@ function CreatePage() {
         <Label>방 코드</Label>
         <Input
           type="text"
-          name="rcode"
-          value={rcode}
-          onChange={(e) => setRcode(e.target.value)}
+          name="docID"
+          value={docID}
+          onChange={(e) => setDocID(e.target.value)}
         />
         {error && <ErrorText>{error}</ErrorText>}
         <br />
