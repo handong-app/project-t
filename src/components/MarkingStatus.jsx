@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import moment from "moment";
 
 const MarkList = styled.div`
   display: flex;
@@ -25,43 +27,71 @@ function MarkingStatus({ roomInfo }) {
   const [marked, setMarked] = useState([]);
   const [unMarked, setUnMarked] = useState([]);
   const [goVote, setGoVote] = useState(true);
+  const [room, setRoom] = useState(null);
 
   useEffect(() => {
-    const users = Object.keys(roomInfo.responsedata);
-    const newMarked = [];
-    const newUnMarked = [];
-    const dateCount = {};
+    const fetchData = async () => {
+      const users = Object.keys(roomInfo.responsedata);
+      const newMarked = [];
+      const newUnMarked = [];
+      const dateCount = {};
 
-    for (const user of users) {
-      console.log("room", roomInfo);
-      // 유저 리스트의 유저의 선택한 날짜의 개수가 0 이라면
-      if (roomInfo.responsedata[user].notAvalDates.length === 0) {
-        newUnMarked.push(roomInfo.responsedata[user]);
-        setGoVote(false);
-      } else {
-        newMarked.push(roomInfo.responsedata[user]);
-        roomInfo.responsedata[user].notAvalDates.forEach((date) => {
-          dateCount[date] = (dateCount[date] || 0) + 1;
-        });
+      for (const user of users) {
+        console.log("room", roomInfo);
+        if (roomInfo.responsedata[user].notAvalDates.length === 0) {
+          newUnMarked.push(roomInfo.responsedata[user]);
+          setGoVote(false);
+        } else {
+          newMarked.push(roomInfo.responsedata[user]);
+          roomInfo.responsedata[user].notAvalDates.forEach((date) => {
+            dateCount[date] = (dateCount[date] || 0) + 1;
+          });
+        }
       }
-    }
 
-    if (newUnMarked.length == 0) {
-      setGoVote(true);
-    } else {
-      setGoVote(false);
-    }
+      if (newUnMarked.length === 0) {
+        setGoVote(true);
+      } else {
+        setGoVote(false);
+      }
 
-    setMarked(newMarked);
-    setUnMarked(newUnMarked);
+      setMarked(newMarked);
+      setUnMarked(newUnMarked);
 
-    const maxCount = Math.max(...Object.values(dateCount));
-    const mostSelectedDates = Object.keys(dateCount).filter(
-      (date) => dateCount[date] === maxCount
-    );
+      const maxCount = Math.max(...Object.values(dateCount));
+      const mostSelectedDates = Object.keys(dateCount).filter(
+        (date) => dateCount[date] === maxCount
+      );
 
-    console.log("가장 많은 유저가 선택한 날짜:", mostSelectedDates);
+      // console.log("가장 많은 유저가 선택한 날짜:", mostSelectedDates);
+
+      // Firebase에 업데이트
+      await updateDoc(roomInfo, {
+        mostSelectedDates: mostSelectedDates,
+      });
+
+      // 업데이트 후 정보 다시 불러오기
+    };
+
+    fetchData();
   }, [roomInfo.responsedata]);
+
+  const getRoom = async () => {
+    const roomDoc = (await getDoc(firebaseDoc)).data();
+    setRoom(roomDoc);
+    // console.log(roomInfo);
+
+    // 내가 선택한 날짜가 있으면 state 와 동기화 해주기
+    // setMySelectedDate(
+    //   (roomDoc.responsedata && roomDoc.responsedata[email_]?.notAvalDates) || []
+    // );
+  };
+
+  useEffect(() => {
+    getRoom();
+  }, []);
+
+  console.log("room A", roomInfo);
 
   return (
     <MarkList>
