@@ -21,26 +21,26 @@ const VoteBtn = styled.button`
   color: white;
 `;
 
-function MarkingStatus({ userList }) {
+function MarkingStatus({ roomInfo }) {
   const [marked, setMarked] = useState([]);
   const [unMarked, setUnMarked] = useState([]);
   const [goVote, setGoVote] = useState(true);
 
   useEffect(() => {
-    const users = Object.keys(userList);
+    const users = Object.keys(roomInfo.responsedata);
     const newMarked = [];
     const newUnMarked = [];
     const dateCount = {};
 
     for (const user of users) {
-      console.log(userList[user].notAvalDates);
+      console.log("room", roomInfo);
       // 유저 리스트의 유저의 선택한 날짜의 개수가 0 이라면
-      if (userList[user].notAvalDates.length === 0) {
-        newUnMarked.push(userList[user]);
+      if (roomInfo.responsedata[user].notAvalDates.length === 0) {
+        newUnMarked.push(roomInfo.responsedata[user]);
         setGoVote(false);
       } else {
-        newMarked.push(userList[user]);
-        userList[user].notAvalDates.forEach((date) => {
+        newMarked.push(roomInfo.responsedata[user]);
+        roomInfo.responsedata[user].notAvalDates.forEach((date) => {
           dateCount[date] = (dateCount[date] || 0) + 1;
         });
       }
@@ -61,7 +61,7 @@ function MarkingStatus({ userList }) {
     );
 
     console.log("가장 많은 유저가 선택한 날짜:", mostSelectedDates);
-  }, [userList]);
+  }, [roomInfo.responsedata]);
 
   return (
     <MarkList>
