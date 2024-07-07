@@ -2,50 +2,44 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
 import { firestore } from "../tools/firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, documentId, getDocs, where } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
+import { query } from "firebase/database";
 // import { useRecoilValue } from "recoil";
 // import { UserEmailState } from "../store/atom";
 function FindRoom({ setFindRoomModalOpen }) {
-  const [rcode, setRcode] = useState(""); // 방 코드 입력받은 것 저장하는 부분
+  const [documentId, setDocumentId] = useState("");
   const [error, setError] = useState("");
-  const [ecode, setEcode] = useState([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const query = await getDocs(collection(firestore, "room"));
-      const fetchedEcode = [];
-      query.forEach((room) => {
-        console.log(room.id, room.data());
-        const rdata = room.data();
-        fetchedEcode.push({ code: rdata.r_code });
-        setEcode(fetchedEcode);
-      });
-    };
-
-    fetchData();
-  }, []);
+  const navigate = useNavigate();
 
   const closeModal = () => {
     setFindRoomModalOpen(false);
   };
 
-  const handleConfirm = (e) => {
+  const handleConfirm = async (e) => {
     //입력받은 초대코드가 존재하는지 아닌지 판별해서 존재할때만 해당 페이지로 이동
     e.preventDefault();
-    const codeExists = ecode.some((item) => item.code === rcode);
-    if (!codeExists) {
-      setError("입력하신 코드가 존재하지 않습니다!");
-    } else {
-      setError("");
-      // TODO: 여기서 rcode를 코드로 갖는 방으로 페이지 이동 필요 (rcode를 링크에 붙여서 이동 ?)
-      console.log(rcode);
-      closeModal(); // 페이지 연결하면 이 부분은 삭제해도 됨
+
+    try {
+      const roomRef = collection(firestore, "room");
+      const q = query(roomRef, where("__name__", "==", documentId));
+      const querySnapshot = await getDocs(q);
+      if (querySnapshot.empty) {
+        setError("입력하신 코드가 존재하지 않습니다!");
+      } else {
+        setError("");
+        navigate(`/m/${documentId}`);
+        closeModal(); // 페이지 연결하면 이 부분은 삭제해도 됨
+      }
+    } catch (error) {
+      console.error("Error fetching document: ", error);
+      setError("오류가 발생했습니다. 다시 입력해주세요");
     }
   };
 
   useEffect(() => {
-    console.log(rcode); // 콘솔 확인용
-  }, [rcode]);
+    console.log(documentId); // 콘솔 확인용
+  }, [documentId]);
 
   return (
     <ModalBackground>
@@ -61,8 +55,8 @@ function FindRoom({ setFindRoomModalOpen }) {
             <InputField
               type="text"
               placeholder="코드 입력..."
-              value={rcode}
-              onChange={(e) => setRcode(e.target.value)}
+              value={documentId}
+              onChange={(e) => setDocumentId(e.target.value)}
               // onChange={(e) => setInputValue(e.target.value)}
             />
             <div>{error && <NoRcodeError>{error}</NoRcodeError>}</div>
