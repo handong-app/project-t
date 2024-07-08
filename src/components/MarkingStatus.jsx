@@ -40,7 +40,7 @@ function MarkingStatus({ roomInfo }) {
     const dateCount = {};
 
     for (const user of users) {
-      console.log("room", roomInfo);
+      // console.log("room", roomInfo);
       if (roomInfo.responsedata[user].notAvalDates.length === 0) {
         newUnMarked.push(roomInfo.responsedata[user]);
         setGoVote(false);
@@ -72,13 +72,13 @@ function MarkingStatus({ roomInfo }) {
         moment(date).format("YYYY-MM-DD")
       ),
     });
+
+    console.log("room A", roomInfo);
   };
 
   useEffect(() => {
     fetchData();
-  }, [roomInfo]);
-
-  console.log("room A", roomInfo);
+  }, [roomInfo.responsedata]);
 
   return (
     <MarkList>
