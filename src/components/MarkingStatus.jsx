@@ -39,8 +39,8 @@ function MarkingStatus({ roomInfo }) {
     const newUnMarked = [];
     const dateCount = {};
 
-    const startDate = moment(roomInfo.r_sDate); // 시작 날짜
-    const endDate = moment(roomInfo.r_fDate); // 마지막 날짜
+    const startDate = moment(roomInfo.r_fDate); // 시작 날짜
+    const endDate = moment(roomInfo.r_sDate); // 마지막 날짜
 
     for (const user of users) {
       if (roomInfo.responsedata[user].notAvalDates.length === 0) {
@@ -63,7 +63,7 @@ function MarkingStatus({ roomInfo }) {
     setMarked(newMarked);
     setUnMarked(newUnMarked);
 
-    // 날짜 기간 설정
+    // 기간 설정
     const dateRange = [];
     let currentDate = startDate;
 
@@ -72,17 +72,12 @@ function MarkingStatus({ roomInfo }) {
       currentDate = currentDate.add(1, "days");
     }
 
-    // 가장 적게 선택된 날짜
-    const minCount = Math.min(...Object.values(dateCount));
-
-    // 적게 선택된 날짜 필터링
-    const leastSelectedDates = dateRange.filter(
-      (date) => dateCount[date] === minCount
-    );
+    // 선택 안된 날짜들
+    const mostSelectedDates = dateRange.filter((date) => !dateCount[date]);
 
     // Firestore에 선택한 날짜 저장
     await updateDoc(firebaseDoc, {
-      AvailDate: leastSelectedDates,
+      AvailDate: mostSelectedDates,
     });
 
     console.log("room A", roomInfo);
