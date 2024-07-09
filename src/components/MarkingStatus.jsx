@@ -63,7 +63,7 @@ function MarkingStatus({ roomInfo }) {
     setMarked(newMarked);
     setUnMarked(newUnMarked);
 
-    // Generating date range
+    // 기간 설정
     const dateRange = [];
     let currentDate = startDate;
 
@@ -72,7 +72,7 @@ function MarkingStatus({ roomInfo }) {
       currentDate = currentDate.add(1, "days");
     }
 
-    // Filtering dates with count of 0
+    // 선택 안된 날짜들
     const mostSelectedDates = dateRange.filter((date) => !dateCount[date]);
 
     // Firestore에 선택한 날짜 저장
