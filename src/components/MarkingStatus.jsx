@@ -39,8 +39,10 @@ function MarkingStatus({ roomInfo }) {
     const newUnMarked = [];
     const dateCount = {};
 
+    const startDate = roomInfo.r_fDate; // 시작 날짜
+    const endDate = roomInfo.r_sDate; // 마지막 날짜
+
     for (const user of users) {
-      // console.log("room", roomInfo);
       if (roomInfo.responsedata[user].notAvalDates.length === 0) {
         newUnMarked.push(roomInfo.responsedata[user]);
         setGoVote(false);
@@ -61,10 +63,8 @@ function MarkingStatus({ roomInfo }) {
     setMarked(newMarked);
     setUnMarked(newUnMarked);
 
-    const maxCount = Math.max(...Object.values(dateCount));
-    const mostSelectedDates = Object.keys(dateCount).filter(
-      (date) => dateCount[date] === maxCount
-    );
+    // count가 0인 날짜들 필터링
+    const mostSelectedDates = dateRange.filter((date) => dateCount[date] === 0);
 
     // Firestore에 선택한 날짜 저장
     await updateDoc(firebaseDoc, {
