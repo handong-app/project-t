@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { auth, firestore } from "../tools/firebase";
+import { doc, updateDoc } from "firebase/firestore";
 import { useParams } from "react-router-dom";
 import moment from "moment";
+import { firestore } from "../tools/firebase"; // assuming this is your firebase setup file
 
 const MarkList = styled.div`
   display: flex;
@@ -39,8 +39,8 @@ function MarkingStatus({ roomInfo }) {
     const newUnMarked = [];
     const dateCount = {};
 
-    const startDate = roomInfo.r_fDate; // 시작 날짜
-    const endDate = roomInfo.r_sDate; // 마지막 날짜
+    const startDate = moment(roomInfo.r_fDate); // 시작 날짜
+    const endDate = moment(roomInfo.r_sDate); // 마지막 날짜
 
     for (const user of users) {
       if (roomInfo.responsedata[user].notAvalDates.length === 0) {
@@ -63,14 +63,21 @@ function MarkingStatus({ roomInfo }) {
     setMarked(newMarked);
     setUnMarked(newUnMarked);
 
-    // count가 0인 날짜들 필터링
-    const mostSelectedDates = dateRange.filter((date) => dateCount[date] === 0);
+    // Generating date range
+    const dateRange = [];
+    let currentDate = startDate;
+
+    while (currentDate <= endDate) {
+      dateRange.push(currentDate.format("YYYY-MM-DD"));
+      currentDate = currentDate.add(1, "days");
+    }
+
+    // Filtering dates with count of 0
+    const mostSelectedDates = dateRange.filter((date) => !dateCount[date]);
 
     // Firestore에 선택한 날짜 저장
     await updateDoc(firebaseDoc, {
-      AvailDate: mostSelectedDates.map((date) =>
-        moment(date).format("YYYY-MM-DD")
-      ),
+      AvailDate: mostSelectedDates,
     });
 
     console.log("room A", roomInfo);
@@ -78,7 +85,7 @@ function MarkingStatus({ roomInfo }) {
 
   useEffect(() => {
     fetchData();
-  }, [roomInfo.responsedata]);
+  }, [roomInfo]);
 
   return (
     <MarkList>
