@@ -6,8 +6,15 @@ import App from "./App.jsx";
 import "./index.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import TestPage from "./pages/TestPage.jsx";
+
 import LoginPage from "./pages/LoginPage.jsx";
 import VotePage from "./pages/VotePage.jsx";
+
+import SurveyPage from "./pages/SurveyPage.jsx";
+import CreatePage from "./pages/CreatePage.jsx";
+import MainPage from "./pages/MainPage.jsx";
+import LoginModule from "./components/LoginModule.jsx";
+
 
 const router = createBrowserRouter([
   {
@@ -18,9 +25,17 @@ const router = createBrowserRouter([
     path: "/test",
     element: <TestPage />,
   },
+  // {
+  //   path: "/",
+  //   element: <MainPage />,
+  // },
   {
-    path: "/login",
-    element: <LoginPage />,
+    path: "/create",
+    element: <CreatePage />,
+  },
+  {
+    path: "/m/:surveyId",
+    element: <SurveyPage />,
   },
   {
     path: "/vote",
@@ -42,7 +57,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <RecoilRoot>
       <ThemeProvider theme={theme}>
-        <RouterProvider router={router} />
+        <LoginModule>
+          <RouterProvider router={router} />
+        </LoginModule>
       </ThemeProvider>
     </RecoilRoot>
   </React.StrictMode>
