@@ -95,7 +95,7 @@ function SurveyPage() {
           <Button onClick={toggleMode}>{editMode ? "저장" : "수정"}하기</Button>
         </ButtonContainer>
       </div>
-      <MarkingStatus userList={roomInfo.responsedata || {}} />
+      <MarkingStatus roomInfo={roomInfo} />
     </StyledContainer>
   );
 }

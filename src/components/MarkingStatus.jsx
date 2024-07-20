@@ -1,5 +1,9 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
+import { doc, updateDoc } from "firebase/firestore";
+import { useParams } from "react-router-dom";
+import moment from "moment";
+import { firestore } from "../tools/firebase"; // assuming this is your firebase setup file
 
 const MarkList = styled.div`
   display: flex;
@@ -21,32 +25,36 @@ const VoteBtn = styled.button`
   color: white;
 `;
 
-function MarkingStatus({ userList }) {
+function MarkingStatus({ roomInfo }) {
+  const { surveyId } = useParams();
+  const firebaseDoc = doc(firestore, "room", surveyId);
+
   const [marked, setMarked] = useState([]);
   const [unMarked, setUnMarked] = useState([]);
   const [goVote, setGoVote] = useState(true);
 
-  useEffect(() => {
-    const users = Object.keys(userList);
+  const fetchData = async () => {
+    const users = Object.keys(roomInfo.responsedata);
     const newMarked = [];
     const newUnMarked = [];
     const dateCount = {};
 
+    const startDate = moment(roomInfo.r_fDate); // 시작 날짜
+    const endDate = moment(roomInfo.r_sDate); // 마지막 날짜
+
     for (const user of users) {
-      console.log(userList[user].notAvalDates);
-      // 유저 리스트의 유저의 선택한 날짜의 개수가 0 이라면
-      if (userList[user].notAvalDates.length === 0) {
-        newUnMarked.push(userList[user]);
+      if (roomInfo.responsedata[user].notAvalDates.length === 0) {
+        newUnMarked.push(roomInfo.responsedata[user]);
         setGoVote(false);
       } else {
-        newMarked.push(userList[user]);
-        userList[user].notAvalDates.forEach((date) => {
+        newMarked.push(roomInfo.responsedata[user]);
+        roomInfo.responsedata[user].notAvalDates.forEach((date) => {
           dateCount[date] = (dateCount[date] || 0) + 1;
         });
       }
     }
 
-    if (newUnMarked.length == 0) {
+    if (newUnMarked.length === 0) {
       setGoVote(true);
     } else {
       setGoVote(false);
@@ -55,19 +63,35 @@ function MarkingStatus({ userList }) {
     setMarked(newMarked);
     setUnMarked(newUnMarked);
 
-    const maxCount = Math.max(...Object.values(dateCount));
-    const mostSelectedDates = Object.keys(dateCount).filter(
-      (date) => dateCount[date] === maxCount
-    );
+    // 기간 설정
+    const dateRange = [];
+    let currentDate = startDate;
 
-    console.log("가장 많은 유저가 선택한 날짜:", mostSelectedDates);
-  }, [userList]);
+    while (currentDate <= endDate) {
+      dateRange.push(currentDate.format("YYYY-MM-DD"));
+      currentDate = currentDate.add(1, "days");
+    }
+
+    // 선택 안된 날짜들
+    const mostSelectedDates = dateRange.filter((date) => !dateCount[date]);
+
+    // Firestore에 선택한 날짜 저장
+    await updateDoc(firebaseDoc, {
+      AvailDate: mostSelectedDates,
+    });
+
+    console.log("room A", roomInfo);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [roomInfo]);
 
   return (
     <MarkList>
       <AboveList>
         <h3>마킹 완료</h3>
-        {marked.length == 0 ? (
+        {marked.length === 0 ? (
           <h5>모든 유저가 마킹을 하지 않음</h5>
         ) : (
           marked.map((user) => <div key={user.email}>{user.displayName}</div>)
@@ -76,13 +100,13 @@ function MarkingStatus({ userList }) {
 
       <BottomList>
         <h3>기다리는 중...</h3>
-        {unMarked.length == 0 ? (
+        {unMarked.length === 0 ? (
           <h5>모든 유저 마킹 완료</h5>
         ) : (
           unMarked.map((user) => <div key={user.email}>{user.displayName}</div>)
         )}
       </BottomList>
-      {goVote ? <VoteBtn>투표 시작</VoteBtn> : <></>}
+      {goVote ? <VoteBtn onClick={fetchData}>투표 시작</VoteBtn> : <></>}
     </MarkList>
   );
 }
