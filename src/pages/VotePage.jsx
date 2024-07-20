@@ -1,8 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import {doc, getDoc} from "firebase/firestore";
+import {auth, firestore} from "../tools/firebase"
 
 function VotePage() {
   const [selectedDate, setSelectedDate] = useState(null);
+  const [roomInfo, setRoomInfo] = useState([]);
+
+  const getRoomInfo = async () => {
+    const roomDoc = (await getDoc(firebaseDoc)).data();
+    setRoomInfo(roomDoc);
+  };
+
+  useEffect(() => {
+    getRoomInfo();
+  }, []);
 
   const handleRadioChange = (index) => {
     setSelectedDate(index);
