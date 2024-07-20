@@ -6,10 +6,15 @@ import App from "./App.jsx";
 import "./index.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import TestPage from "./pages/TestPage.jsx";
+
+import LoginPage from "./pages/LoginPage.jsx";
+import VotePage from "./pages/VotePage.jsx";
+
 import SurveyPage from "./pages/SurveyPage.jsx";
 import CreatePage from "./pages/CreatePage.jsx";
 import MainPage from "./pages/MainPage.jsx";
 import LoginModule from "./components/LoginModule.jsx";
+
 
 const router = createBrowserRouter([
   {
@@ -31,6 +36,10 @@ const router = createBrowserRouter([
   {
     path: "/m/:surveyId",
     element: <SurveyPage />,
+  },
+  {
+    path: "/vote",
+    element: <VotePage />,
   },
 ]);
 
