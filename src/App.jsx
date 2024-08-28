@@ -12,15 +12,6 @@ import MainPage from "./pages/MainPage";
 import styled from "styled-components";
 function App() {
   return (
-
-    <div className="App">
-      <h1>Hello Frontend!</h1>
-      <TestComponent />
-      <Link to="/test">To Test Page</Link>
-      <Link to="/login">To Login Page</Link>
-      <Link to="/vote">To Vote Page</Link>
-    </div>
-
     <AppContainer className="App">
       <LogoutBtn>
         <h1 className="title">Hello Frontend!</h1>
@@ -31,7 +22,6 @@ function App() {
 
       <MainPage />
     </AppContainer>
-
   );
 }
 
