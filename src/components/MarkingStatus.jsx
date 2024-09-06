@@ -39,8 +39,8 @@ function MarkingStatus({ roomInfo, getRoomInfo }) {
     const newUnMarked = [];
     const dateCount = {};
 
-    const startDate = moment(roomInfo.r_fDate); // 시작 날짜
-    const endDate = moment(roomInfo.r_sDate); // 마지막 날짜
+    const startDate = moment(roomInfo.r_sDate); // 시작 날짜
+    const endDate = moment(roomInfo.r_fDate); // 마지막 날짜
 
     for (const user of users) {
       if (roomInfo.responsedata[user].notAvalDates.length === 0) {

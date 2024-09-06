@@ -70,7 +70,10 @@ function SurveyPage() {
     })
   );
   if (roomInfo.status === "vote") {
-    return <VotePage />;
+    return <VotePage roomInfo={roomInfo} getRoomInfo={getRoomInfo} />;
+  }
+  if (roomInfo.status === "finish") {
+    return <div>선규페이지</div>;
   }
   return (
     <StyledContainer>

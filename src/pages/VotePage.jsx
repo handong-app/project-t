@@ -1,20 +1,11 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import {doc, getDoc} from "firebase/firestore";
-import {auth, firestore} from "../tools/firebase"
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { auth, firestore } from "../tools/firebase";
+import { useParams } from "react-router-dom";
 
-function VotePage() {
+function VotePage({ roomInfo, getRoomInfo }) {
   const [selectedDate, setSelectedDate] = useState(null);
-  const [roomInfo, setRoomInfo] = useState([]);
-
-  const getRoomInfo = async () => {
-    const roomDoc = (await getDoc(firebaseDoc)).data();
-    setRoomInfo(roomDoc);
-  };
-
-  useEffect(() => {
-    getRoomInfo();
-  }, []);
 
   const handleRadioChange = (index) => {
     setSelectedDate(index);
@@ -26,17 +17,32 @@ function VotePage() {
     "2024년 6월 28일 (목) ~ 29일 (금)",
   ];
 
+  console.log(roomInfo);
+
+  const { surveyId } = useParams();
+  const firebaseDoc = doc(firestore, "room", surveyId);
+
   return (
     <PageContainer>
       <Container>
         <Title>가장 선호하는 날짜를 선택해주세요</Title>
-        {dates.map((date, index) => (
+        {roomInfo.AvailDate?.map((date, index) => (
           <VoteContainer key={index} onClick={() => handleRadioChange(index)}>
             <SelectBtn checked={selectedDate === index} />
             <Date checked={selectedDate === index}>{date}</Date>
           </VoteContainer>
         ))}
-        <CompleteBtn>투표 완료</CompleteBtn>
+        <CompleteBtn
+          onClick={async () => {
+            await updateDoc(firebaseDoc, {
+              finalDate: roomInfo.AvailDate[selectedDate],
+              status: "finish",
+            });
+            getRoomInfo();
+          }}
+        >
+          투표 완료
+        </CompleteBtn>
       </Container>
     </PageContainer>
   );
