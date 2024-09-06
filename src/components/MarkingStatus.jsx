@@ -25,7 +25,7 @@ const VoteBtn = styled.button`
   color: white;
 `;
 
-function MarkingStatus({ roomInfo }) {
+function MarkingStatus({ roomInfo, getRoomInfo }) {
   const { surveyId } = useParams();
   const firebaseDoc = doc(firestore, "room", surveyId);
 
@@ -106,7 +106,20 @@ function MarkingStatus({ roomInfo }) {
           unMarked.map((user) => <div key={user.email}>{user.displayName}</div>)
         )}
       </BottomList>
-      {goVote ? <VoteBtn onClick={fetchData}>투표 시작</VoteBtn> : <></>}
+      {goVote ? (
+        <VoteBtn
+          onClick={async () => {
+            await updateDoc(firebaseDoc, {
+              status: "vote",
+            });
+            getRoomInfo();
+          }}
+        >
+          투표 시작
+        </VoteBtn>
+      ) : (
+        <></>
+      )}
     </MarkList>
   );
 }

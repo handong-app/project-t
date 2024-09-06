@@ -8,6 +8,7 @@ import { auth, firestore } from "../tools/firebase";
 import { useParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { UserEmailState } from "../store/atom";
+import VotePage from "./VotePage";
 
 function SurveyPage() {
   const userEmail = useRecoilValue(UserEmailState);
@@ -68,6 +69,9 @@ function SurveyPage() {
       reservedDates[date] = [...(reservedDates[date] || []), markUserData];
     })
   );
+  if (roomInfo.status === "vote") {
+    return <VotePage />;
+  }
   return (
     <StyledContainer>
       <div>
@@ -95,7 +99,7 @@ function SurveyPage() {
           <Button onClick={toggleMode}>{editMode ? "저장" : "수정"}하기</Button>
         </ButtonContainer>
       </div>
-      <MarkingStatus roomInfo={roomInfo} />
+      <MarkingStatus roomInfo={roomInfo} getRoomInfo={getRoomInfo} />
     </StyledContainer>
   );
 }
