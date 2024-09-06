@@ -23,7 +23,10 @@ function ChooseDate({ setModalOpen }) {
   // };
 
   const formatDate = (date) => {
-    return date ? date.toISOString().substring(0, 10) : "";
+    let year = date.getFullYear();
+    let month = (date.getMonth() + 1).toString().padStart(2, "0"); // Months are 0-based
+    let day = date.getDate().toString().padStart(2, "0");
+    return `${year}-${month}-${day}`;
   };
   const handleSubmit = (e) => {
     e.preventDefault();
