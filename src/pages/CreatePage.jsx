@@ -45,8 +45,9 @@ function CreatePage() {
           r_intro: intro,
           r_memberId: members,
           r_name: name,
-          r_fDate: startDate, // yyyy-mm-dd 형식
-          r_sDate: endDate, // yyyy-mm-dd 형식
+          r_sDate: startDate, // yyyy-mm-dd 형식
+          r_fDate: endDate, // yyyy-mm-dd 형식
+          status: "mark",
         });
         setSuccess(true);
         setName("");
