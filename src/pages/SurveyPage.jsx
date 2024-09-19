@@ -9,6 +9,7 @@ import { useParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { UserEmailState } from "../store/atom";
 import VotePage from "./VotePage";
+import LastPage from "./LastPage";
 
 function SurveyPage() {
   const userEmail = useRecoilValue(UserEmailState);
@@ -73,7 +74,7 @@ function SurveyPage() {
     return <VotePage roomInfo={roomInfo} getRoomInfo={getRoomInfo} />;
   }
   if (roomInfo.status === "finish") {
-    return <div>선규페이지</div>;
+    return <LastPage roomInfo={roomInfo} getRoomInfo={getRoomInfo} />;
   }
   return (
     <StyledContainer>

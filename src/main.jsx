@@ -13,6 +13,7 @@ import SurveyPage from "./pages/SurveyPage.jsx";
 import CreatePage from "./pages/CreatePage.jsx";
 import MainPage from "./pages/MainPage.jsx";
 import LoginModule from "./components/LoginModule.jsx";
+import LastPage from "./pages/LastPage.jsx";
 
 const router = createBrowserRouter([
   {
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
   {
     path: "/vote",
     element: <VotePage />,
+  },
+  {
+    path: "/last",
+    element: <LastPage />,
   },
 ]);
 
